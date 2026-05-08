@@ -102,7 +102,7 @@ TEAM_ID=<10-character Team ID> DEVICE_ID=<iPhone UDID> Scripts/deploy-to-iphone.
 
 If Edge 530 can see `AirPodsHRBridge` but stays on **Connecting**, remove the previous failed sensor entry on the Edge, stop/start BLE Bridge, wait for the first BPM again, and retry pairing. Some Edge firmware versions do not finish pairing until the first Heart Rate Measurement notification arrives.
 
-The app uses Heart Rate Service UUID `0x180D` and Heart Rate Measurement characteristic UUID `0x2A37`. Measurement packets set the Sensor Contact Supported + Contact Detected flags (`0x06`) and are throttled to about 1 Hz for bike-computer compatibility. The app also exposes a small Device Information Service to improve compatibility with receivers that build a sensor profile during first pairing.
+The app uses Heart Rate Service UUID `0x180D` and Heart Rate Measurement characteristic UUID `0x2A37`. Measurement packets set the Sensor Contact Supported + Contact Detected flags (`0x06`) and are throttled to about 1 Hz for bike-computer compatibility.
 
 ## HR Glance
 

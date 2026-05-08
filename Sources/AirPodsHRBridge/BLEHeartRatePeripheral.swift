@@ -15,15 +15,10 @@ final class BLEHeartRatePeripheral: NSObject, ObservableObject {
     private var subscribedCentrals = Set<UUID>()
     private var lastNotificationDate: Date?
     private var pendingNotificationTimer: Timer?
-    private var pendingServiceAdds = 0
 
     private let heartRateServiceUUID = CBUUID(string: "180D")
     private let heartRateMeasurementUUID = CBUUID(string: "2A37")
     private let bodySensorLocationUUID = CBUUID(string: "2A38")
-    private let deviceInformationServiceUUID = CBUUID(string: "180A")
-    private let manufacturerNameUUID = CBUUID(string: "2A29")
-    private let modelNumberUUID = CBUUID(string: "2A24")
-    private let firmwareRevisionUUID = CBUUID(string: "2A26")
     private let minimumNotificationInterval: TimeInterval = 1.0
 
     init(localName: String) {
@@ -50,7 +45,6 @@ final class BLEHeartRatePeripheral: NSObject, ObservableObject {
         heartRateService = nil
         heartRateMeasurement = nil
         pendingBPM = nil
-        pendingServiceAdds = 0
         pendingNotificationTimer?.invalidate()
         pendingNotificationTimer = nil
         lastNotificationDate = nil
@@ -66,7 +60,6 @@ final class BLEHeartRatePeripheral: NSObject, ObservableObject {
         heartRateService = nil
         heartRateMeasurement = nil
         pendingBPM = nil
-        pendingServiceAdds = 0
         pendingNotificationTimer?.invalidate()
         pendingNotificationTimer = nil
         lastNotificationDate = nil
@@ -85,7 +78,6 @@ final class BLEHeartRatePeripheral: NSObject, ObservableObject {
         status = "Configuring BLE service"
         peripheralManager.stopAdvertising()
         peripheralManager.removeAllServices()
-        pendingServiceAdds = 0
 
         let measurement = CBMutableCharacteristic(type: heartRateMeasurementUUID,
                                                    properties: [.notify],
@@ -104,29 +96,6 @@ final class BLEHeartRatePeripheral: NSObject, ObservableObject {
         service.characteristics = [measurement, bodyLocation]
         self.heartRateMeasurement = measurement
         self.heartRateService = service
-        add(service)
-        add(makeDeviceInformationService())
-    }
-
-    private func makeDeviceInformationService() -> CBMutableService {
-        let manufacturer = fixedReadCharacteristic(type: manufacturerNameUUID, value: "SnowyFoams")
-        let model = fixedReadCharacteristic(type: modelNumberUUID, value: "AirPodsHRBridge")
-        let firmware = fixedReadCharacteristic(type: firmwareRevisionUUID, value: "1.0")
-
-        let service = CBMutableService(type: deviceInformationServiceUUID, primary: true)
-        service.characteristics = [manufacturer, model, firmware]
-        return service
-    }
-
-    private func fixedReadCharacteristic(type: CBUUID, value: String) -> CBMutableCharacteristic {
-        CBMutableCharacteristic(type: type,
-                                properties: [.read],
-                                value: Data(value.utf8),
-                                permissions: [.readable])
-    }
-
-    private func add(_ service: CBMutableService) {
-        pendingServiceAdds += 1
         peripheralManager.add(service)
     }
 
@@ -216,10 +185,7 @@ extension BLEHeartRatePeripheral: CBPeripheralManagerDelegate {
             status = "Add service error: \(error.localizedDescription)"
             return
         }
-        pendingServiceAdds = max(0, pendingServiceAdds - 1)
-        if pendingServiceAdds == 0 {
-            startAdvertising()
-        }
+        startAdvertising()
     }
 
     func peripheralManagerDidStartAdvertising(_ peripheral: CBPeripheralManager, error: Error?) {
