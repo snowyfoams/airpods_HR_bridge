@@ -137,6 +137,15 @@ Heart-rate data is personal health data. This app reads HealthKit heart-rate dat
 
 See `Docs/PRIVACY_POLICY_DRAFT.md` for a publishable privacy policy draft.
 
+## Acknowledgements
+
+Project design, implementation, debugging, and documentation were developed with AI coding assistance from:
+
+1. OpenAI Codex
+2. Claude
+
+Project ownership and publishing remain with `snowyfoams`.
+
 ## Distribution Notes
 
 This repository is source-first. Users who install it themselves need Xcode and their own Apple signing identity. Public App Store, TestFlight, and Ad Hoc distribution are separate Apple Developer Program workflows.
