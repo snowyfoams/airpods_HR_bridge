@@ -7,7 +7,7 @@ struct HRGlanceSharedSnapshot: Hashable {
 }
 
 enum HRGlanceSharedState {
-    static let appGroupIdentifier = "group.com.example.AirPodsHRBridge"
+    static let appGroupIdentifier = "group.com.kangeshou.AirPodsHRBridge"
 
     private enum Key {
         static let isRunning = "hrGlance.isRunning"
@@ -42,5 +42,16 @@ enum HRGlanceSharedState {
         return HRGlanceSharedSnapshot(isRunning: defaults.bool(forKey: Key.isRunning),
                                       bpm: rawBPM?.intValue,
                                       updatedAt: updatedAt)
+    }
+
+    // MARK: - Darwin notification for cross-process signaling
+
+    static let darwinNotificationName = "com.kangeshou.AirPodsHRBridge.glanceStateChanged" as CFString
+
+    static func postStateChanged() {
+        CFNotificationCenterPostNotification(
+            CFNotificationCenterGetDarwinNotifyCenter(),
+            CFNotificationName(darwinNotificationName),
+            nil, nil, true)
     }
 }

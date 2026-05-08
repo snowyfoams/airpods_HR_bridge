@@ -13,7 +13,19 @@ final class HRGlanceLiveActivityController {
         activity != nil || !Activity<HRGlanceActivityAttributes>.activities.isEmpty
     }
 
+    func adoptExisting() {
+        if activity == nil {
+            activity = Activity<HRGlanceActivityAttributes>.activities.first
+        }
+    }
+
     func start(initialBPM: Int?, startedAt: Date = Date()) throws {
+        // If an Activity already exists (e.g. started by the widget extension), adopt it
+        if let existing = Activity<HRGlanceActivityAttributes>.activities.first {
+            activity = existing
+            return
+        }
+
         guard ActivityAuthorizationInfo().areActivitiesEnabled else {
             throw BridgeError.liveActivitiesUnavailable
         }

@@ -1,5 +1,6 @@
-import Foundation
+import ActivityKit
 import Combine
+import Foundation
 import HealthKit
 import WidgetKit
 
@@ -60,6 +61,70 @@ final class BridgeViewModel: ObservableObject {
         blePeripheral.$subscriberCount
             .receive(on: DispatchQueue.main)
             .assign(to: &$subscriberCount)
+
+        observeExtensionStateChanges()
+    }
+
+    private func observeExtensionStateChanges() {
+        let center = CFNotificationCenterGetDarwinNotifyCenter()
+        let observer = Unmanaged.passUnretained(self).toOpaque()
+        CFNotificationCenterAddObserver(
+            center, observer,
+            { _, observer, _, _, _ in
+                guard let observer else { return }
+                let vm = Unmanaged<BridgeViewModel>.fromOpaque(observer).takeUnretainedValue()
+                Task { @MainActor in
+                    await vm.syncWithWidgetState()
+                }
+            },
+            HRGlanceSharedState.darwinNotificationName,
+            nil, .deliverImmediately)
+    }
+
+    func syncWithWidgetState() async {
+        let snapshot = HRGlanceSharedState.snapshot()
+        let hasLiveActivity = !Activity<HRGlanceActivityAttributes>.activities.isEmpty
+
+        if snapshot.isRunning && !isGlanceRunning && !isDemoRunning {
+            if !hasLiveActivity {
+                // Stale state: app was killed and system cleaned up the Activity.
+                // Reset shared state so the widget shows "Start" again.
+                HRGlanceSharedState.save(isRunning: false, bpm: nil)
+                WidgetCenter.shared.reloadTimelines(ofKind: HRGlanceWidgetKind.launcher)
+                return
+            }
+            // Widget extension started the glance — adopt the Live Activity, start workout
+            do {
+                if isRunning { await stopBridge() }
+                try await workoutManager.requestAuthorization()
+                try await workoutManager.startWorkout(activityType: .other, locationType: .unknown)
+                liveActivityController.adoptExisting()
+                HRGlanceSharedState.save(isRunning: true, bpm: currentBPM)
+                lastWidgetAssessmentTitle = HRGlanceHeartRateAssessment.evaluate(bpm: currentBPM).title
+                glanceStatus = "Live Activity running"
+                isGlanceRunning = true
+            } catch {
+                // Workout failed — end the orphaned Live Activity and reset widget
+                healthStatus = "Error"
+                glanceStatus = error.localizedDescription
+                liveActivityController.adoptExisting()
+                await liveActivityController.end(finalBPM: nil)
+                HRGlanceSharedState.save(isRunning: false, bpm: nil)
+                WidgetCenter.shared.reloadTimelines(ofKind: HRGlanceWidgetKind.launcher)
+            }
+        } else if !snapshot.isRunning && isGlanceRunning {
+            // Widget extension stopped the glance — stop workout, clean up
+            await workoutManager.stopWorkout()
+            liveActivityController.adoptExisting()
+            if liveActivityController.hasActiveActivity {
+                await liveActivityController.end(finalBPM: currentBPM)
+            }
+            lastWidgetAssessmentTitle = nil
+            reminderManager.reset()
+            glanceStatus = "Stopped"
+            isGlanceRunning = false
+            WidgetCenter.shared.reloadTimelines(ofKind: HRGlanceWidgetKind.launcher)
+        }
     }
 
     func toggleBridge() async {
