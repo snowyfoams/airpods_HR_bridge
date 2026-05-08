@@ -37,9 +37,10 @@ Use this for a separate App Review support video or a longer product demo.
 4. Show the Live Activity or Dynamic Island with live BPM.
 5. Stop HR Glance and note that the workout is discarded.
 6. Start BLE Bridge with the app foregrounded and the iPhone unlocked.
-7. On the bike computer: Add Sensor -> Heart Rate -> select AirPodsHRBridge.
-8. Show the bike computer displaying BPM.
-9. Stop BLE Bridge.
+7. Wait until the app shows BPM and BLE is Advertising or Broadcasting.
+8. On the bike computer: Add Sensor -> Heart Rate -> select AirPodsHRBridge.
+9. Show the bike computer displaying BPM.
+10. Stop BLE Bridge.
 
 ## Screenshot Shot List
 

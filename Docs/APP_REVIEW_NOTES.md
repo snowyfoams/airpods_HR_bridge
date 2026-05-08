@@ -26,9 +26,10 @@ How to review the real hardware flow:
 3. Confirm live BPM appears in the app and Live Activity.
 4. Stop HR Glance.
 5. Tap Start BLE Bridge while the app is foregrounded and the iPhone is unlocked.
-6. On a compatible bike computer or BLE receiver, add a Heart Rate sensor and select AirPodsHRBridge.
-7. Confirm the receiver displays BPM.
-8. Stop BLE Bridge.
+6. Wait until the app shows BPM and BLE is Advertising or Broadcasting.
+7. On a compatible bike computer or BLE receiver, add a Heart Rate sensor and select AirPodsHRBridge.
+8. Confirm the receiver displays BPM.
+9. Stop BLE Bridge.
 
 Privacy and data handling:
 - Heart-rate data is read from HealthKit only after the user explicitly starts HR Glance or BLE Bridge.
@@ -36,7 +37,7 @@ Privacy and data handling:
 - The app does not upload heart-rate data to any server.
 - The app does not use heart-rate data for advertising, tracking, or analytics.
 - During BLE Bridge or Demo Mode, BPM is broadcast locally over Bluetooth only while the user keeps the feature running.
-- Widget state is stored locally in an App Group container so the widget can show the current state.
+- Widget state is stored locally on device so the widget can show the current state when the signing configuration supports shared storage.
 - Local notifications are used only for user-visible high-heart-rate reminders.
 - Workouts used for live heart-rate access are discarded when stopped.
 

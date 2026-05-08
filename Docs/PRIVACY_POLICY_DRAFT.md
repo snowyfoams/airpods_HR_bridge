@@ -33,7 +33,7 @@ When Edge Bridge or Demo Mode is running, BPM is broadcast locally over Bluetoot
 
 ## Local Storage
 
-The app stores temporary widget state locally in an App Group container so the widget can show whether monitoring is active. This state is not sent to a server.
+The app stores temporary widget state locally on device so the widget can show whether monitoring is active when the signing configuration supports shared storage. This state is not sent to a server.
 
 The app may send local notifications for high-heart-rate reminders. Notification content is generated on device and is not sent to a server.
 
