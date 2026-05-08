@@ -11,12 +11,30 @@ This is a fitness utility and interoperability prototype. It is not a medical de
 
 ## Demo
 
-<p>
-  <img src="Docs/Images/app-demo.png" alt="HR Bridge app demo" width="280">
-  <img src="Docs/Images/dynamic-island-demo.png" alt="Dynamic Island heart-rate demo" width="420">
-  <img src="Docs/Images/widget-monitoring-demo.png" alt="Widget monitoring on Home Screen" width="280">
-  <img src="Docs/Images/cycling-context-demo.png" alt="Cycling context with S-Works" width="420">
-</p>
+<table>
+  <tr>
+    <td align="center">
+      <img src="Docs/Images/app-demo.png" alt="HR Bridge app demo" width="240"><br>
+      <sub>App main screen (Demo Mode)</sub>
+    </td>
+    <td align="center">
+      <img src="Docs/Images/widget-monitoring-demo.png" alt="Widget monitoring on Home Screen" width="240"><br>
+      <sub>Widget monitoring on Home Screen</sub>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" align="center">
+      <img src="Docs/Images/dynamic-island-demo.png" alt="Dynamic Island heart-rate demo" width="500"><br>
+      <sub>Dynamic Island compact view</sub>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" align="center">
+      <img src="Docs/Images/cycling-context-demo.png" alt="Cycling context" width="500"><br>
+      <sub>Cycling context</sub>
+    </td>
+  </tr>
+</table>
 
 ## How It Works
 
