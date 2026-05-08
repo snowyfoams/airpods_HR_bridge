@@ -13,7 +13,12 @@ This is a fitness utility and interoperability prototype. It is not a medical de
 
 <p>
   <img src="Docs/Images/app-demo.png" alt="HR Bridge app demo" width="280">
+  <img src="Docs/Images/widget-monitoring-demo.png" alt="HR Glance widget monitoring demo" width="280">
   <img src="Docs/Images/dynamic-island-demo.png" alt="Dynamic Island heart-rate demo" width="420">
+</p>
+
+<p>
+  <img src="Docs/Images/cycling-context-demo.png" alt="Cycling setup context" width="620">
 </p>
 
 ## How It Works
