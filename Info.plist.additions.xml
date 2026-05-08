@@ -1,0 +1,12 @@
+<!-- Add these keys to your app target Info.plist -->
+<key>NSHealthShareUsageDescription</key>
+<string>AirPodsHRBridge reads heart-rate data during a workout so it can broadcast it to your bike computer.</string>
+<key>NSHealthUpdateUsageDescription</key>
+<string>AirPodsHRBridge starts a workout session so HealthKit can provide live workout metrics.</string>
+<key>NSBluetoothAlwaysUsageDescription</key>
+<string>AirPodsHRBridge uses Bluetooth to broadcast heart rate to compatible devices such as Garmin Edge.</string>
+<key>UIBackgroundModes</key>
+<array>
+    <string>bluetooth-peripheral</string>
+    <!-- Add workout-processing if supported by your SDK / target. -->
+</array>
