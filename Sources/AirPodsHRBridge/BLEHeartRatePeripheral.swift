@@ -36,23 +36,6 @@ final class BLEHeartRatePeripheral: NSObject, ObservableObject {
         configureServiceAndAdvertise()
     }
 
-    func prepareForFirstMeasurement() {
-        shouldAdvertise = false
-        if peripheralManager.state == .poweredOn {
-            peripheralManager.stopAdvertising()
-            peripheralManager.removeAllServices()
-        }
-        heartRateService = nil
-        heartRateMeasurement = nil
-        pendingBPM = nil
-        pendingNotificationTimer?.invalidate()
-        pendingNotificationTimer = nil
-        lastNotificationDate = nil
-        subscribedCentrals.removeAll()
-        subscriberCount = 0
-        status = "Waiting for first BPM"
-    }
-
     func stop() {
         shouldAdvertise = false
         peripheralManager.stopAdvertising()
@@ -76,7 +59,6 @@ final class BLEHeartRatePeripheral: NSObject, ObservableObject {
 
     private func configureServiceAndAdvertise() {
         status = "Configuring BLE service"
-        peripheralManager.stopAdvertising()
         peripheralManager.removeAllServices()
 
         let measurement = CBMutableCharacteristic(type: heartRateMeasurementUUID,

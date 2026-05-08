@@ -44,8 +44,6 @@ final class WorkoutHeartRateManager: NSObject, ObservableObject {
 
     func startWorkout(activityType: HKWorkoutActivityType,
                       locationType: HKWorkoutSessionLocationType) async throws {
-        latestBPM = nil
-
         let configuration = HKWorkoutConfiguration()
         configuration.activityType = activityType
         configuration.locationType = locationType

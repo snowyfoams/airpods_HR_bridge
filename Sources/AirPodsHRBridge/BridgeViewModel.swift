@@ -25,7 +25,6 @@ final class BridgeViewModel: ObservableObject {
     private var lastWidgetReload = Date.distantPast
     private var lastWidgetAssessmentTitle: String?
     private var demoTask: Task<Void, Never>?
-    private var isBridgeBLEStarted = false
 
     var currentBPMText: String {
         currentBPM.map(String.init) ?? "--"
@@ -38,7 +37,7 @@ final class BridgeViewModel: ObservableObject {
                 guard let self else { return }
                 self.currentBPM = bpm
                 if let bpm, self.isRunning {
-                    self.publishBridgeBPM(bpm)
+                    self.blePeripheral.updateHeartRate(bpm)
                 }
                 if self.isGlanceRunning {
                     self.updateGlanceSurfaces(bpm: bpm)
@@ -79,20 +78,13 @@ final class BridgeViewModel: ObservableObject {
             if isGlanceRunning {
                 await stopGlance()
             }
-            currentBPM = nil
-            isBridgeBLEStarted = false
-            blePeripheral.prepareForFirstMeasurement()
             try await workoutManager.requestAuthorization()
             try await workoutManager.startWorkout(activityType: .cycling, locationType: .outdoor)
+            blePeripheral.start()
             isRunning = true
-            if let currentBPM {
-                publishBridgeBPM(currentBPM)
-            }
         } catch {
             healthStatus = "Error"
             workoutStatus = error.localizedDescription
-            blePeripheral.stop()
-            isBridgeBLEStarted = false
             isRunning = false
         }
     }
@@ -100,7 +92,6 @@ final class BridgeViewModel: ObservableObject {
     func stopBridge() async {
         await workoutManager.stopWorkout()
         blePeripheral.stop()
-        isBridgeBLEStarted = false
         isRunning = false
     }
 
@@ -217,7 +208,6 @@ final class BridgeViewModel: ObservableObject {
 
         isDemoRunning = true
         workoutStatus = "Demo"
-        blePeripheral.updateHeartRate(initialBPM)
         blePeripheral.start()
         updateGlanceSurfaces(bpm: initialBPM, forceWidgetReload: true)
         startDemoPulse()
@@ -259,17 +249,6 @@ final class BridgeViewModel: ObservableObject {
         lastWidgetAssessmentTitle = assessmentTitle
         Task { await liveActivityController.update(bpm: bpm) }
         reloadLauncherWidgetIfNeeded(force: shouldReloadImmediately)
-    }
-
-    private func publishBridgeBPM(_ bpm: Int) {
-        if !isBridgeBLEStarted {
-            blePeripheral.updateHeartRate(bpm)
-            blePeripheral.start()
-            isBridgeBLEStarted = true
-            return
-        }
-
-        blePeripheral.updateHeartRate(bpm)
     }
 
     private func startDemoPulse() {

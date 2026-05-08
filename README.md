@@ -13,12 +13,7 @@ This is a fitness utility and interoperability prototype. It is not a medical de
 
 <p>
   <img src="Docs/Images/app-demo.png" alt="HR Bridge app demo" width="280">
-  <img src="Docs/Images/widget-monitoring-demo.png" alt="HR Glance widget monitoring demo" width="280">
   <img src="Docs/Images/dynamic-island-demo.png" alt="Dynamic Island heart-rate demo" width="420">
-</p>
-
-<p>
-  <img src="Docs/Images/cycling-context-demo.png" alt="Cycling setup context" width="620">
 </p>
 
 ## How It Works
@@ -48,6 +43,7 @@ The public repo deliberately uses placeholder identifiers:
 
 - App bundle ID: `com.example.AirPodsHRBridge`
 - Widget bundle ID: `com.example.AirPodsHRBridge.HRGlanceLiveActivity`
+- App Group: `group.com.example.AirPodsHRBridge`
 - Development Team: unset
 
 Before installing on your iPhone:
@@ -57,14 +53,13 @@ Before installing on your iPhone:
 3. Change the app bundle identifier to a unique value, for example `com.yourname.AirPodsHRBridge`.
 4. Select the `HRGlanceLiveActivity` extension target and set the same Team.
 5. Change the extension bundle identifier to the app bundle plus `.HRGlanceLiveActivity`.
-
-Optional widget state sharing:
-
-If your signing account supports App Groups, add the same App Group to the app and widget extension targets, for example `group.com.yourname.AirPodsHRBridge`, then update `Sources/Shared/HRGlanceSharedState.swift` so `appGroupIdentifier` exactly matches that App Group. The default project omits App Group entitlements so personal Xcode installs are easier to sign.
+6. Update the App Group in both targets, for example `group.com.yourname.AirPodsHRBridge`.
+7. Update `Sources/Shared/HRGlanceSharedState.swift` so `appGroupIdentifier` exactly matches that App Group.
 
 Required capabilities:
 
 - HealthKit
+- App Groups
 - Live Activities
 - Background Modes: `bluetooth-peripheral`
 
@@ -95,12 +90,9 @@ TEAM_ID=<10-character Team ID> DEVICE_ID=<iPhone UDID> Scripts/deploy-to-iphone.
 1. Wear compatible AirPods and keep them connected to the iPhone.
 2. Open HR Bridge, keep the app in the foreground with the screen unlocked, and tap **Start BLE Bridge**.
 3. Allow Health access when prompted.
-4. Wait until the app shows a BPM value and the BLE row changes from **Waiting for first BPM** to **Advertising** or **Broadcasting**.
-5. On Edge 530: **Settings -> Sensors -> Add Sensor -> Heart Rate**.
-6. Select `AirPodsHRBridge`.
-7. Finish first pairing while the app is foregrounded. After first pairing, later reconnects can work while the app is backgrounded or the phone is locked.
-
-If Edge 530 can see `AirPodsHRBridge` but stays on **Connecting**, remove the previous failed sensor entry on the Edge, stop/start BLE Bridge, wait for the first BPM again, and retry pairing. Some Edge firmware versions do not finish pairing until the first Heart Rate Measurement notification arrives.
+4. On Edge 530: **Settings -> Sensors -> Add Sensor -> Heart Rate**.
+5. Select `AirPodsHRBridge`.
+6. Finish first pairing while the app is foregrounded. After first pairing, later reconnects can work while the app is backgrounded or the phone is locked.
 
 The app uses Heart Rate Service UUID `0x180D` and Heart Rate Measurement characteristic UUID `0x2A37`. Measurement packets set the Sensor Contact Supported + Contact Detected flags (`0x06`) and are throttled to about 1 Hz for bike-computer compatibility.
 

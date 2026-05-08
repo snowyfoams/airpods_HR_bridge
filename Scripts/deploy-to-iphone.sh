@@ -145,7 +145,6 @@ For App Store demos:
 For first Edge 530 pairing:
 1. Keep the app open and the screen unlocked.
 2. Tap Start BLE Bridge and allow Health permissions.
-3. Wait until the app shows BPM and BLE is Advertising or Broadcasting.
-4. On Edge 530: Settings > Sensors > Add Sensor > Heart Rate.
-5. Select AirPodsHRBridge.
+3. On Edge 530: Settings > Sensors > Add Sensor > Heart Rate.
+4. Select AirPodsHRBridge.
 EOF
